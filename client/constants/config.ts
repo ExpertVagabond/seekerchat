@@ -11,7 +11,7 @@ export const SUPABASE_ANON_KEY =
 /** Helius RPC — DAS-compatible, required for Genesis Token verification */
 export const HELIUS_RPC_URL =
   process.env.EXPO_PUBLIC_HELIUS_RPC_URL ??
-  "https://mainnet.helius-rpc.com/?api-key=YOUR_KEY";
+  "https://mainnet.helius-rpc.com/?api-key=021dc255-a17b-47d8-b5b4-c915ee29efff";
 
 /** Solana cluster for MWA authorization */
 export const SOLANA_CLUSTER = "mainnet-beta" as const;
