@@ -10,6 +10,7 @@ dist/
 web-build/
 android/
 ios/
+supabase/.temp/
 
 # Env files
 .env
