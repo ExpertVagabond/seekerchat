@@ -1,0 +1,77 @@
+publisher:
+  name: Purple Squirrel Media
+  website: https://purplesquirrelmedia.io
+  email: matthew@purplesquirrelmedia.io
+  support_email: matthew@purplesquirrelmedia.io
+
+app:
+  name: SeekerChat
+  address: ''
+  android_package: com.seekerchat.app
+  urls:
+    license_url: https://seekerchat.app/terms
+    copyright_url: https://seekerchat.app/terms
+    privacy_policy_url: https://seekerchat.app/privacy
+    website: https://seekerchat.app
+  media:
+    - purpose: icon
+      uri: ./media/icon.png
+
+release:
+  address: ''
+  media:
+    - purpose: icon
+      uri: ./media/icon.png
+    - purpose: banner
+      uri: ./media/banner.png
+    - purpose: featureGraphic
+      uri: ./media/feature_graphic.png
+    - purpose: screenshot
+      uri: ./media/screenshot_1.png
+    - purpose: screenshot
+      uri: ./media/screenshot_2.png
+    - purpose: screenshot
+      uri: ./media/screenshot_3.png
+    - purpose: screenshot
+      uri: ./media/screenshot_4.png
+  files:
+    - purpose: install
+      uri: ./files/app-release.apk
+  catalog:
+    en-US:
+      name: SeekerChat
+      short_description: Exclusive encrypted chat for Solana Saga & Seeker phone owners
+      long_description: |
+        SeekerChat is a token-gated messaging app exclusively for Solana mobile device owners. Connect your wallet via Mobile Wallet Adapter, prove device ownership through Genesis Token verification, and chat in real-time with other Saga and Seeker holders.
+
+        Features:
+        - Wallet-based authentication via Sign In With Solana (SIWS)
+        - Genesis Token gate — only verified Saga/Seeker owners can access
+        - Real-time 1:1 direct messages and group channels
+        - Offline message queue — messages send when you reconnect
+        - Dark theme optimized for OLED displays
+        - No email, no phone number, no passwords — just your wallet
+
+        SeekerChat is built on Supabase with Row Level Security, ensuring your messages are only visible to authorized participants. Your wallet is your identity.
+      new_in_version: |
+        Initial release:
+        - MWA wallet authentication with SIWS
+        - Genesis Token verification (Saga + Seeker)
+        - Real-time chat with Supabase subscriptions
+        - Group channels and direct messages
+        - Offline message queuing
+  android_details:
+    locales:
+      - en-US
+
+solana_mobile_dapp_publisher_portal:
+  google_store_package: ''
+  testing_instructions: |
+    1. Install the APK on a Saga or Seeker device
+    2. Open SeekerChat — you should see the wallet connect screen
+    3. Tap "Connect Wallet" — MWA will prompt you to authorize with Phantom/Seed Vault
+    4. After connecting, the app verifies your Genesis Token
+    5. If you have a Saga Genesis Token or Seeker Genesis Token, you'll enter the chat
+    6. Try sending a message in General Chat
+    7. Test creating a new channel and starting a DM
+    Note: You need a wallet with a Saga Genesis Token (collection 46pcSL5gmjBrPqGKFaLbbCmR6iVuLJbnQy13hAe7s6CC) or Seeker Genesis Token (mint authority GT2zuHVaZQYZSyQMgJPLzvkmyztfyXg2NJunqFp4p3A4) to pass the token gate.
