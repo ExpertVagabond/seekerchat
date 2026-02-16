@@ -1,0 +1,48 @@
+{
+  "expo": {
+    "name": "SeekerChat",
+    "slug": "seekerchat",
+    "owner": "purplesquirrelmedia",
+    "version": "1.0.0",
+    "runtimeVersion": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "seekerchat",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "description": "Encrypted chat exclusively for Solana Saga & Seeker phone owners. Token-gated messaging powered by Solana.",
+    "android": {
+      "package": "com.seekerchat.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#14F195",
+        "foregroundImage": "./assets/images/icon.png"
+      },
+      "edgeToEdgeEnabled": true,
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_NETWORK_STATE"
+      ]
+    },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#0D1117"
+        }
+      ],
+      "expo-secure-store",
+      "expo-crypto"
+    ],
+    "experiments": {
+      "reactCompiler": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": ""
+      }
+    }
+  }
+}
