@@ -1,0 +1,13 @@
+diff --git a/node_modules/@solana-mobile/mobile-wallet-adapter-protocol/android/build.gradle b/node_modules/@solana-mobile/mobile-wallet-adapter-protocol/android/build.gradle
+index 54ef0e3..3a25d09 100644
+--- a/node_modules/@solana-mobile/mobile-wallet-adapter-protocol/android/build.gradle
++++ b/node_modules/@solana-mobile/mobile-wallet-adapter-protocol/android/build.gradle
+@@ -8,7 +8,7 @@ buildscript {
+   }
+ 
+   dependencies {
+-    classpath 'com.android.tools.build:gradle:8.13.0'
++    // classpath 'com.android.tools.build:gradle:8.13.0' // Patched: use root project AGP
+     // noinspection DifferentKotlinGradleVersion
+     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+   }
