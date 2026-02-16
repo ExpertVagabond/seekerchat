@@ -27,11 +27,15 @@
       }
     },
     "dapp-store": {
+      "developmentClient": false,
       "distribution": "internal",
       "channel": "production",
       "android": {
         "buildType": "apk",
         "credentialsSource": "local"
+      },
+      "env": {
+        "APP_VARIANT": "production"
       }
     }
   }
