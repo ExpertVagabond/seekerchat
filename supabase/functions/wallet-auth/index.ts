@@ -1,9 +1,10 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import nacl from "https://esm.sh/tweetnacl@1.0.3";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const JWT_SECRET = Deno.env.get("SUPABASE_JWT_SECRET")!;
+const JWT_SECRET = Deno.env.get("JWT_SECRET") ?? Deno.env.get("SUPABASE_JWT_SECRET") ?? "";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -16,28 +17,33 @@ const BASE58_ALPHABET =
   "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
 function decodeBase58(input: string): Uint8Array {
-  const bytes: number[] = [0];
+  // Count leading '1's (zero bytes in base58)
+  let leadingZeros = 0;
+  for (let i = 0; i < input.length && input[i] === "1"; i++) leadingZeros++;
+
+  // Allocate enough space for the decoded bytes
+  const size = Math.ceil(input.length * Math.log(58) / Math.log(256));
+  const bytes = new Uint8Array(size);
+
   for (const char of input) {
-    const value = BASE58_ALPHABET.indexOf(char);
-    if (value === -1) throw new Error(`Invalid base58 character: ${char}`);
-    for (let i = 0; i < bytes.length; i++) {
-      bytes[i] = bytes[i] * 58 + value;
-      if (bytes[i] > 255) {
-        if (i + 1 >= bytes.length) bytes.push(0);
-        bytes[i + 1] += (bytes[i] >> 8);
-        bytes[i] &= 0xff;
-      }
+    let carry = BASE58_ALPHABET.indexOf(char);
+    if (carry === -1) throw new Error(`Invalid base58 character: ${char}`);
+    // Apply "value = value * 58 + carry" across all bytes (big-endian)
+    for (let j = size - 1; j >= 0; j--) {
+      carry += bytes[j] * 58;
+      bytes[j] = carry & 0xff;
+      carry >>= 8;
     }
   }
-  // Count leading '1's for leading zero bytes
-  let leadingZeros = 0;
-  for (const char of input) {
-    if (char === "1") leadingZeros++;
-    else break;
-  }
-  const result = new Uint8Array(leadingZeros + bytes.length);
-  for (let i = 0; i < bytes.length; i++) {
-    result[leadingZeros + bytes.length - 1 - i] = bytes[i];
+
+  // Skip leading zero bytes from the conversion
+  let start = 0;
+  while (start < size && bytes[start] === 0) start++;
+
+  // Prepend the leading zero bytes from the input
+  const result = new Uint8Array(leadingZeros + (size - start));
+  for (let i = start; i < size; i++) {
+    result[leadingZeros + i - start] = bytes[i];
   }
   return result;
 }
@@ -80,21 +86,15 @@ async function createJWT(
   return `${signingInput}.${signatureB64}`;
 }
 
-/** Verify ed25519 signature using Web Crypto */
-async function verifyEd25519(
+/** Verify ed25519 signature using tweetnacl (pure JS, no Web Crypto dependency) */
+function verifyEd25519(
   message: Uint8Array,
   signature: Uint8Array,
   publicKey: Uint8Array,
-): Promise<boolean> {
+): boolean {
   try {
-    const key = await crypto.subtle.importKey(
-      "raw",
-      publicKey,
-      { name: "Ed25519" },
-      false,
-      ["verify"],
-    );
-    return await crypto.subtle.verify("Ed25519", key, signature, message);
+    if (publicKey.length !== 32 || signature.length !== 64) return false;
+    return nacl.sign.detached.verify(message, signature, publicKey);
   } catch {
     return false;
   }
@@ -120,7 +120,7 @@ Deno.serve(async (req) => {
     const signatureBytes = decodeBase58(signature);
     const publicKeyBytes = decodeBase58(wallet_address);
 
-    const isValid = await verifyEd25519(
+    const isValid = verifyEd25519(
       messageBytes,
       signatureBytes,
       publicKeyBytes,
