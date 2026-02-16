@@ -1,13 +1,25 @@
 diff --git a/node_modules/@solana-mobile/mobile-wallet-adapter-protocol/android/build.gradle b/node_modules/@solana-mobile/mobile-wallet-adapter-protocol/android/build.gradle
-index 54ef0e3..3a25d09 100644
+index 54ef0e3..2863945 100644
 --- a/node_modules/@solana-mobile/mobile-wallet-adapter-protocol/android/build.gradle
 +++ b/node_modules/@solana-mobile/mobile-wallet-adapter-protocol/android/build.gradle
-@@ -8,7 +8,7 @@ buildscript {
-   }
- 
-   dependencies {
+@@ -1,18 +1,5 @@
+-buildscript {
+-  // Buildscript is evaluated before everything else so we can't use getExtOrDefault
+-  def kotlin_version = rootProject.ext.has('kotlinVersion') ? rootProject.ext.get('kotlinVersion') : project.properties['SolanaMobileWalletAdapterModule_kotlinVersion']
+-
+-  repositories {
+-      google()
+-      mavenCentral()
+-  }
+-
+-  dependencies {
 -    classpath 'com.android.tools.build:gradle:8.13.0'
-+    // classpath 'com.android.tools.build:gradle:8.13.0' // Patched: use root project AGP
-     // noinspection DifferentKotlinGradleVersion
-     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-   }
+-    // noinspection DifferentKotlinGradleVersion
+-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+-  }
+-}
++// Patched: removed buildscript block — root project provides AGP + Kotlin plugins
++// Original had AGP 8.13.0 which conflicts with Expo 54's plugin management
+ 
+ def isNewArchitectureEnabled() {
+   return rootProject.hasProperty("newArchEnabled") &&  rootProject.getProperty("newArchEnabled") == "true"
