@@ -1,3 +1,55 @@
+// ---------------------------------------------------------------------------
+// Security: input validation, error sanitization, constants
+// ---------------------------------------------------------------------------
+
+const MAX_INPUT_LENGTH = 4096;
+const MAX_MESSAGE_LENGTH = 2000;
+const MAX_ADDRESS_LENGTH = 64;
+const SOLANA_PUBKEY_RE = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+const MAX_MESSAGES_PER_MINUTE = 30;
+
+function sanitizeError(err: unknown): string {
+  let msg = String(err instanceof Error ? err.message : err);
+  msg = msg.replace(/\/[^\s:]+/g, "[path]");
+  msg = msg.replace(/at\s+.+\(.*:\d+:\d+\)/g, "[stackframe]");
+  msg = msg.replace(/[1-9A-HJ-NP-Za-km-z]{64,}/g, "[REDACTED_KEY]");
+  return msg.slice(0, 500);
+}
+
+function validateWalletAddress(address: string): string {
+  const trimmed = address.trim();
+  if (trimmed.length > MAX_ADDRESS_LENGTH) {
+    throw new Error("Address exceeds maximum length");
+  }
+  if (!SOLANA_PUBKEY_RE.test(trimmed)) {
+    throw new Error("Invalid Solana wallet address format");
+  }
+  return trimmed;
+}
+
+function validateMessage(msg: string): string {
+  if (typeof msg !== "string") throw new Error("Message must be a string");
+  const trimmed = msg.trim();
+  if (trimmed.length === 0) throw new Error("Message must not be empty");
+  if (trimmed.length > MAX_MESSAGE_LENGTH)
+    throw new Error(`Message exceeds maximum length of ${MAX_MESSAGE_LENGTH}`);
+  // Strip HTML tags to prevent injection
+  return trimmed.replace(/<[^>]*>/g, "");
+}
+
+function validateStringInput(
+  value: unknown,
+  maxLen: number = MAX_INPUT_LENGTH,
+  field: string = "input",
+): string {
+  if (typeof value !== "string") throw new Error(`${field} must be a string`);
+  return value.trim().slice(0, maxLen);
+}
+
+// ---------------------------------------------------------------------------
+// App imports
+// ---------------------------------------------------------------------------
+
 import React from "react";
 import { View, StyleSheet, ActivityIndicator } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
